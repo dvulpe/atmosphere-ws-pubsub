@@ -52,15 +52,20 @@
 
         $(function () {
             wsApi.subscribe();
-            var previousChannel = null;
+            var currentChannel = null;
             $("#join").click(function () {
-                if (previousChannel !== null) {
-                    wsApi.send({"command":"unsubscribe", "channel":previousChannel});
+                if (currentChannel !== null) {
+                    wsApi.send({"command":"unsubscribe", "channel":currentChannel});
                 }
                 var channel = $("#channel").val();
                 wsApi.send({"command":"subscribe", "channel":channel});
-                previousChannel = channel;
+                currentChannel = channel;
             });
+
+            $("#leave").click(function () {
+                wsApi.send({"command":"unsubscribe", "channel":currentChannel});
+            });
+
             $("#subscribe").click(function () {
                 wsApi.subscribe();
             });
@@ -68,6 +73,7 @@
             $("#unsubscribe").click(function () {
                 wsApi.unsubscribe();
             });
+
         });
     </script>
     <style type='text/css'>
@@ -96,6 +102,7 @@
 <body>
 Channel: <input type="text" id="channel" name="channel"/>
 <input type="button" id="join" value="Join"/>
+<input type="button" id="leave" value="Leave"/>
 <input type="button" id="subscribe" value="Subscribe WS"/>
 <input type="button" id="unsubscribe" value="Unsubscribe WS"/>
 

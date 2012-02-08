@@ -20,6 +20,7 @@ public class ChatService {
 
     public void subscribe(AtmosphereResource<HttpServletRequest, HttpServletResponse> resource, String channel) {
         Broadcaster broadcaster = broadcasterFactory.lookup(DefaultBroadcaster.class, channel, true);
+        LOG.debug("Subscribing resource {} to channel {}.", resource, channel);
         broadcaster.addAtmosphereResource(resource);
         if (!isRunningThreadOnChannel(channel)) {
             Thread thread = new Thread(new ChannelPublisher(broadcaster, channel));
@@ -35,6 +36,7 @@ public class ChatService {
     public void unsubscribe(AtmosphereResource<HttpServletRequest, HttpServletResponse> resource, String channel) {
         Broadcaster broadcaster = broadcasterFactory.lookup(DefaultBroadcaster.class, channel, false);
         if (broadcaster != null) {
+            LOG.debug("De-subscribing resource {} from channel {}.", resource, channel);
             broadcaster.removeAtmosphereResource(resource);
         }
     }
