@@ -44,12 +44,13 @@ public class ChatController {
         }
     }
 
-    private void suspend(AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) throws InterruptedException {
+    private void suspend(final AtmosphereResource<HttpServletRequest, HttpServletResponse> resource) throws InterruptedException {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         resource.addEventListener(new AtmosphereResourceEventListenerAdapter() {
             @Override
             public void onSuspend(AtmosphereResourceEvent<HttpServletRequest, HttpServletResponse> event) {
                 countDownLatch.countDown();
+                resource.removeEventListener(this);
             }
         });
         resource.suspend();
