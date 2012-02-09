@@ -1,6 +1,7 @@
-package org.atmosphere.pubsub.config;
+package org.atmosphere.pubsub.config.resolvers;
 
 import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.pubsub.utils.AtmosphereUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

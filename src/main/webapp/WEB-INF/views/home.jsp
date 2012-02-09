@@ -1,5 +1,3 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--@elvariable id="transponderId" type="java.lang.Integer"--%>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
     <%--<meta http-equiv="X-UA-Compatible" content="chrome=1"/>--%>
@@ -55,15 +53,16 @@
             var currentChannel = null;
             $("#join").click(function () {
                 if (currentChannel !== null) {
-                    wsApi.send({"command":"unsubscribe", "channel":currentChannel});
+                    wsApi.send({"type":"unsubscribe", "channel":currentChannel});
                 }
                 var channel = $("#channel").val();
-                wsApi.send({"command":"subscribe", "channel":channel});
+                wsApi.send({"type":"subscribe", "channel":channel});
                 currentChannel = channel;
             });
 
             $("#leave").click(function () {
-                wsApi.send({"command":"unsubscribe", "channel":currentChannel});
+                wsApi.send({"type":"unsubscribe", "channel":currentChannel});
+                currentChannel = null;
             });
 
             $("#subscribe").click(function () {

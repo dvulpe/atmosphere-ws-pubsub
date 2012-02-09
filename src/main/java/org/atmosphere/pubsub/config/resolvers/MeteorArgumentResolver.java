@@ -1,6 +1,7 @@
-package org.atmosphere.pubsub.config;
+package org.atmosphere.pubsub.config.resolvers;
 
 import org.atmosphere.cpr.Meteor;
+import org.atmosphere.pubsub.utils.AtmosphereUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -9,12 +10,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Created by IntelliJ IDEA.
- * User: dan
- * Date: 2/8/12
- * Time: 1:47 PM
- */
+
 public class MeteorArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

@@ -1,5 +1,7 @@
 package org.atmosphere.pubsub.config;
 
+import org.atmosphere.pubsub.config.resolvers.AtmosphereArgumentResolver;
+import org.atmosphere.pubsub.config.resolvers.MeteorArgumentResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;

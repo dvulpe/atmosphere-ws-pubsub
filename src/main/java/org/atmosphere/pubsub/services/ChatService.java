@@ -1,14 +1,16 @@
 package org.atmosphere.pubsub.services;
 
 import com.google.common.collect.Maps;
-import org.atmosphere.cpr.*;
+import org.atmosphere.cpr.Broadcaster;
+import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.cpr.BroadcasterLifeCyclePolicyListener;
+import org.atmosphere.cpr.DefaultBroadcaster;
+import org.atmosphere.pubsub.dto.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 @Service
@@ -18,14 +20,11 @@ public class ChatService {
     private final static Logger LOG = LoggerFactory.getLogger(ChatService.class);
     private Map<String, Thread> runningPublishers = Maps.newConcurrentMap();
 
-    public void subscribe(AtmosphereResource<HttpServletRequest, HttpServletResponse> resource, String channel) {
-        Broadcaster broadcaster = broadcasterFactory.lookup(DefaultBroadcaster.class, channel, true);
-        LOG.debug("Subscribing resource {} to channel {}.", resource, channel);
-        broadcaster.addAtmosphereResource(resource);
-        if (!isRunningThreadOnChannel(channel)) {
-            Thread thread = new Thread(new ChannelPublisher(broadcaster, channel));
-            thread.start();
-            runningPublishers.put(channel, thread);
+    public void execute(Command command) {
+        Broadcaster broadcaster = broadcasterFactory.lookup(DefaultBroadcaster.class, command.getChannel(), true);
+        command.execute(broadcaster);
+        if (!broadcaster.isDestroyed() && !isRunningThreadOnChannel(command.getChannel())) {
+            startMessagingThread(command.getChannel(), broadcaster);
         }
     }
 
@@ -33,12 +32,10 @@ public class ChatService {
         return runningPublishers.containsKey(channel) && runningPublishers.get(channel).isAlive();
     }
 
-    public void unsubscribe(AtmosphereResource<HttpServletRequest, HttpServletResponse> resource, String channel) {
-        Broadcaster broadcaster = broadcasterFactory.lookup(DefaultBroadcaster.class, channel, false);
-        if (broadcaster != null) {
-            LOG.debug("De-subscribing resource {} from channel {}.", resource, channel);
-            broadcaster.removeAtmosphereResource(resource);
-        }
+    private synchronized void startMessagingThread(String channel, Broadcaster broadcaster) {
+        Thread thread = new Thread(new ChannelPublisher(broadcaster, channel));
+        thread.start();
+        runningPublishers.put(channel, thread);
     }
 
     public class ChannelPublisher implements Runnable, BroadcasterLifeCyclePolicyListener {
@@ -67,14 +64,14 @@ public class ChatService {
             try {
                 Thread.sleep(400);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOG.error("Interrupted chat broadcast thread", e);
             }
         }
 
         @Override
         public void onEmpty() {
             shouldRun = false;
-            LOG.debug("Disabling multicast thread, no subscribers connected");
+            LOG.debug("Shutting down multicast thread for channel {}, no subscribers connected.", channel);
         }
 
         @Override
