@@ -1,9 +1,9 @@
 package org.atmosphere.pubsub.config.protocol;
 
+import org.atmosphere.cpr.AtmosphereConfig;
 import org.atmosphere.cpr.AtmosphereRequest;
 import org.atmosphere.cpr.AtmosphereResourceImpl;
 import org.atmosphere.cpr.AtmosphereResponse;
-import org.atmosphere.cpr.AtmosphereServlet;
 import org.atmosphere.pubsub.config.SpringApplicationContext;
 import org.atmosphere.pubsub.dto.BaseCommand;
 import org.atmosphere.pubsub.dto.Command;
@@ -24,7 +24,7 @@ public class DelegatingWebSocketProtocol implements WebSocketProtocol {
     public static final Logger LOG = LoggerFactory.getLogger(DelegatingWebSocketProtocol.class);
 
     @Override
-    public void configure(AtmosphereServlet.AtmosphereConfig atmosphereConfig) {
+    public void configure(AtmosphereConfig atmosphereConfig) {
         // nothing needed
     }
 
@@ -80,13 +80,13 @@ public class DelegatingWebSocketProtocol implements WebSocketProtocol {
     }
 
     @Override
-    public String handleResponse(AtmosphereResponse<?> atmosphereResponse, String message) {
+    public String handleResponse(AtmosphereResponse atmosphereResponse, String message) {
         return message;
     }
 
     @Override
-    public byte[] handleResponse(AtmosphereResponse<?> atmosphereResponse, byte[] message, int offset,
-                                 int length) {
+    public byte[] handleResponse(AtmosphereResponse atmosphereResponse, byte[] message, int length, int offset) {
         return message;
     }
+
 }
