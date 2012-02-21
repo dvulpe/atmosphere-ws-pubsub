@@ -10,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonTypeInfo;
         property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = UnsubscribeCommand.class, name = "unsubscribe"),
-        @JsonSubTypes.Type(value = SubscribeCommand.class, name = "subscribe")})
+        @JsonSubTypes.Type(value = JoinChannelCommand.class, name = "subscribe")})
 public abstract class BaseCommand implements Command {
     protected AtmosphereResource resource;
     protected String channel;

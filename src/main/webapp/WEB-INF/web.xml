@@ -15,6 +15,10 @@
             <param-value>org.atmosphere.pubsub.config.protocol.DelegatingWebSocketProtocol</param-value>
         </init-param>
         <init-param>
+            <param-name>org.atmosphere.cpr.broadcastFilterClasses</param-name>
+            <param-value>org.atmosphere.pubsub.config.protocol.JSONOutputFilter</param-value>
+        </init-param>
+        <init-param>
             <param-name>contextClass</param-name>
             <param-value>
                 org.springframework.web.context.support.AnnotationConfigWebApplicationContext
